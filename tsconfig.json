@@ -1,0 +1,13 @@
+{
+    "compilerOptions": { 
+        "noEmit" : true,
+        "target" : "esnext",
+        "module" : "nodenext",
+        "moduleResolution" : "nodenext", 
+        "strict" : true,
+        "jsx": "preserve",
+        "skipLibCheck": true,
+        "esModuleInterop": true
+    },
+    "files" : ["server.ts", "src/main.tsx"]
+}
