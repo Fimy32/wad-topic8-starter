@@ -1,3 +1,14 @@
+import { useEffect, useState } from "react";
+
 export default function App() {
-    return <h1>Welcome to the HitTastic! App!</h1>;
+
+    const [username, setUsername] = useState("");
+
+    useEffect( ()=> {
+        fetch('/login')
+            .then(response => response.json())
+            .then(json => setUsername(json.username));    
+    }, []);
+
+    return <h1>Welcome to the HitTastic {username}!</h1>;
 }

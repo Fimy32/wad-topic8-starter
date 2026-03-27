@@ -51,14 +51,16 @@ app.use(expressSession({
 }));
 
 app.post('/login', (req, res) => {
-    let stmt = db.prepare('SELECT name FROM ht_users WHERE name=? AND password=?');
+    let stmt = db.prepare('SELECT username FROM ht_users WHERE username=? AND password=?');
     let user = stmt.get(req.body.username, req.body.password);
+    console.log(user, req.body.username, req.body.password);
     if (user) {
         req.session.username = req.body.username;
         res.json({username: req.body.username});
     }
     else {
         res.status(401).json({username: null});
+        console.log("Failed login attempt for username: " + req.body.username);
     }
 })
 
@@ -69,7 +71,7 @@ app.use( (req, res, next) => {
         if(req.session.username) { 
             next();
         } else {
-            res.status(401).json({error: "You're not logged in. Go away!"});
+            res.status(401).json({error: "You must be logged in to perform this operation."});
         }
     }
 });
@@ -77,6 +79,7 @@ app.use( (req, res, next) => {
 app.post('/logout', (req, res) => {
     req.session.destroy(() => {
         res.json({loggedout: true});
+        console.log("User Successfully logged out.")
     });
 })
 

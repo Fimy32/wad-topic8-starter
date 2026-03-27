@@ -9,6 +9,7 @@ const root = ReactDOM.createRoot(
 root.render(
     <>
         <h1>Welcome to the React Hitastic App!</h1>
+        <App />
         <LoginField />
     </>
 )
