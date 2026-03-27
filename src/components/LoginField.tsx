@@ -28,7 +28,7 @@ export default function LoginField() {
         {loggedIn ? <LogOutButton /> : null}
 
         <button id="logoutButton" onClick={async () => {
-                  await fetch('/logout');
+                  await fetch('/user/logout');
                   setLoggedIn(false);
                   setUsername("");
                   setPassword("");
@@ -36,7 +36,7 @@ export default function LoginField() {
         </>
     
         async function Login(): Promise<LoginResponse> {
-            const response = await fetch('/login', {
+            const response = await fetch('user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'

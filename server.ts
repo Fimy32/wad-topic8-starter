@@ -3,11 +3,14 @@ import express from 'express';
 import Database from 'better-sqlite3';
 import expressSession from 'express-session';
 import betterSqlite3Session from 'express-session-better-sqlite3';
+import userRouter from './router/users';
+import authorisation from './middleware/authorisation';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+
 
 const db = new Database("wadsongs.db");
 const sessDb = new Database("sessions.db");
@@ -50,42 +53,10 @@ app.use(expressSession({
     }
 }));
 
-app.post('/login', (req, res) => {
-    let stmt = db.prepare('SELECT username FROM ht_users WHERE username=? AND password=?');
-    let user = stmt.get(req.body.username, req.body.password);
-    console.log(user, req.body.username, req.body.password);
-    if (user) {
-        req.session.username = req.body.username;
-        res.json({username: req.body.username});
-    }
-    else {
-        res.status(401).json({username: null});
-        console.log("Failed login attempt for username: " + req.body.username);
-    }
-})
 
-app.use( (req, res, next) => {
-    if(["POST", "DELETE"].indexOf(req.method) == -1) {
-        next();
-    } else {
-        if(req.session.username) { 
-            next();
-        } else {
-            res.status(401).json({error: "You must be logged in to perform this operation."});
-        }
-    }
-});
+app.use('/user', userRouter);
 
-app.post('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.json({loggedout: true});
-        console.log("User Successfully logged out.")
-    });
-})
-
-app.get('/login', (req, res) => {
-    res.json({username: req.session.username});
-})
+app.use(authorisation);
 
 // Search by artist
 app.get('/artist/:artist', (req, res) => {
